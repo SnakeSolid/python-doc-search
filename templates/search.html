@@ -26,7 +26,7 @@
 		    <div class="row">
 		    	<div class="description padding20 bg-grayLighter">
 					<h4>Results for: {{ text | e }}</h4>
-					<p>Search <a href="{{ url_for("search") + "?q=" + maybe }}">{{ maybe }}</a> instead.</p>
+					<p>Search <a href="{{ url_for("search", q=maybe) }}">{{ maybe }}</a> instead.</p>
 				</div>
 		    </div>
 			{% endif %}
@@ -50,7 +50,11 @@
 		    
 		    {% if result %}
 		    <div class="row">
-				<p>Page {{ page }}, see <a href="{{ url_for("search") + "?q=" + text + "&p=" }}{{ page + 1 }}">next page</p>.</p>
+			    {% if page > 1 %}
+				<p><a href="{{ url_for("search", q=text, p=page - 1) }}">Previous page</a>, page {{ page }}, <a href="{{ url_for("search", q=text, p=page + 1) }}">next page</a>.</p>
+				{% else %}
+				<p><a href="{{ url_for("search", q=text, p=page + 1) }}">Next page</a>.</p>
+			    {% endif %}
 		    </div>
 		    {% endif %}
 	    </div>
