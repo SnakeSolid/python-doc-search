@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html >
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Результаты поиска / IUM Doc indexer</title>
+	
+	<link rel="icon" type="image/png" id="favicon" href="{{ url_for('static', filename='favicon.png') }}"/>
+	
+	<link rel="stylesheet" href="{{ url_for('static', filename='metro-bootstrap.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='metro-bootstrap-responsive.css') }}" type="text/css" />
+</head>
+<body class="metro">
+	<div class="container">
+	    <div class="grid fluid">
+		    <div class="row">
+				<form method="GET" action="{{ url_for('search') | e }}">
+					<div class="input-control text" data-role="input-control">
+						<input type="text" name="q" value="{{ text | e }}" />
+						<button class="btn-search"></button>
+					</div>
+				</form>
+		    </div>
+		    
+			{% if suggest %}
+		    <div class="row">
+		    	<div class="description padding20 bg-grayLighter">
+					<h4>Results for: {{ text | e }}</h4>
+					<p>Search <a href="{{ url_for("search") + "?q=" + maybe }}">{{ maybe }}</a> instead.</p>
+				</div>
+		    </div>
+			{% endif %}
+		    
+		    <div class="row">
+				{% if not result %}
+				<h2>No results</h2>
+				{% else %}
+				<div class="listview">
+				{% for item in result %}
+					<div class="list-content">
+						<h4><a href="{{ url_for('docs', path=item.path) }}">{{ item.title | e }}</a></h4>
+						<p class="text-muted">{{ item.path | e }}</p>
+						<p>{{ item.content | safe }}</p>
+						<h6 class="text-muted">{{ item.tags }}</h6>
+					</div>
+				{% endfor %}
+				{% endif %}
+				</div>
+		    </div>
+		    
+		    {% if result %}
+		    <div class="row">
+				<p>Page {{ page }}, see <a href="{{ url_for("search") + "?q=" + text + "&p=" }}{{ page + 1 }}">next page</p>.</p>
+		    </div>
+		    {% endif %}
+	    </div>
+	</div>
+</body>
+</html>

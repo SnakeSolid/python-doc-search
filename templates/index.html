@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html >
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>IUM Doc indexer</title>
+	
+	<link rel="icon" type="image/png" id="favicon" href="{{ url_for('static', filename='favicon.png') }}"/>
+	
+	<link rel="stylesheet" href="{{ url_for('static', filename='metro-bootstrap.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='metro-bootstrap-responsive.css') }}" type="text/css" />
+</head>
+<body class="metro">
+	<div class="container">
+	    <div class="grid fluid">
+		    <div class="row">
+				<div class="span4"></div>
+		    	<img src="{{ url_for('static', filename='logo.png') }}" class="span4">
+	    	</div>
+	    
+		    <div class="row">
+				<form method="GET" action="{{ url_for('search') | e }}">
+					<div class="input-control text" data-role="input-control">
+						<input type="text" name="q" value="{{ text }}" />
+						<button class="btn-search"></button>
+					</div>
+				</form>
+		    </div>
+	    </div>
+	</div>
+</body>
+</html>

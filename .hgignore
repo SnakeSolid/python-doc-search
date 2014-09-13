@@ -1,0 +1,10 @@
+
+syntax: glob
+.settings
+
+syntax: glob
+ium5
+syntax: glob
+ium8
+syntax: glob
+index
