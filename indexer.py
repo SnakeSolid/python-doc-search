@@ -111,6 +111,8 @@ class Indexer(object):
 			
 			for hit in searcher.search_page(parser.parse(query), pagenum=page, pagelen=pagelen):
 				result.append({
+						"rank": hit.rank,
+						"score": hit.score,
 						"path": hit["path"],
 						"title": hit["title"] if "title" in hit else "",
 						"content": hit.highlights("content"),

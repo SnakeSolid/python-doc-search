@@ -44,7 +44,7 @@
 				<div class="listview">
 				{% for item in result %}
 					<div class="list-content">
-						<h4><a href="{{ url_for('docs', path=item.path) }}" target="_{{ target }}">{{ item.title | e }}</a></h4>
+						<h4>{{ item.rank + 1 }}. <a href="{{ url_for('docs', path=item.path) }}" target="_{{ target }}">{{ item.title | e }}</a> <span class="small text-muted">(score: {{ '%0.4f'| format(item.score) }})</span></h4>
 						<p class="text-muted">{{ item.path | e }}</p>
 						<p>{{ item.content | safe }}</p>
 						<h6 class="text-muted">{{ item.tags }}</h6>
