@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html >
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>IUM Doc indexer: search settings</title>
+	
+	<link rel="icon" type="image/png" id="favicon" href="{{ url_for('static', filename='favicon.png') }}"/>
+	
+	<link rel="stylesheet" href="{{ url_for('static', filename='metro-bootstrap.css') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='metro-bootstrap-responsive.css') }}" type="text/css" />
+</head>
+<body class="metro">
+	<div class="container">
+	    <div class="grid fluid">
+		    <div class="row"></div>
+		    <div class="row">
+				<div class="span2"></div>
+				<div class="span8">
+					<form method="POST" action="{{ url_for('settings') | e }}">
+			    		<legend>Search settings</legend>
+			    	
+						<h4>Number of results on page</h4>
+					
+						<div class="input-control select">
+						    <select name="pagesize">
+						    	{% for i in [ 10, 15, 20, 30, 50, 100 ] %}
+						    	{% if i == pagesize %}
+							    <option value="{{ i }}" selected="selected">{{ i }} pages</option>
+							    {% else %}
+							    <option value="{{ i }}">{{ i }} pages</option>
+							    {% endif %}
+							    {% endfor %}
+						    </select>
+						</div>
+						
+						<h4>Show opened result in page</h4>
+					
+						<div class="input-control radio size3">
+							<label for="target-blank">
+								{% if target == "blank" %}
+								<input type="radio" id="target-blank" name="target" value="blank" checked="checked" />
+								{% else %}
+								<input type="radio" id="target-blank" name="target" value="blank" />
+								{% endif %}
+								<span class="check"></span>
+								New window or tab
+							</label>
+						</div>
+							
+						<div class="input-control radio size3">
+							<label for="target-self">
+								{% if target == "self" %}
+								<input type="radio" id="target-self" name="target" value="self" checked="checked" />
+								{% else %}
+								<input type="radio" id="target-self" name="target" value="self" />
+								{% endif %}
+								<span class="check"></span>
+								Same window or tab
+							</label>
+						</div>
+						
+						<div class="input-control">
+							<button type="submit" class="primary">Save settings</button>
+							<button type="reset">Reset</button>
+						</div>
+					</form>
+				</div>
+		    </div>
+	    </div>
+	</div>
+</body>
+</html>

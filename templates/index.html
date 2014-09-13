@@ -19,12 +19,22 @@
 	    	</div>
 	    
 		    <div class="row">
-				<form method="GET" action="{{ url_for('search') | e }}">
-					<div class="input-control text" data-role="input-control">
-						<input type="text" name="q" value="{{ text }}" />
-						<button class="btn-search"></button>
-					</div>
-				</form>
+				<div class="span2"></div>
+				<div class="span8">
+					<form method="GET" action="{{ url_for('search') | e }}">
+						<div class="input-control text">
+							<input type="text" name="q" value="{{ text }}" />
+							<button class="btn-search"></button>
+						</div>
+					</form>
+				</div>
+		    </div>
+		    
+		    <div class="row">
+				<div class="span5"></div>
+				<div class="span2">
+					<p>Search settings <a href="{{ url_for('settings') }}">page</a>.</p>
+			    </div>
 		    </div>
 	    </div>
 	</div>
