@@ -31,8 +31,8 @@
 			{% if suggest %}
 		    <div class="row">
 		    	<div class="description padding20 bg-grayLighter">
-					<h4>Results for: {{ text | e }}</h4>
-					<p>Search <a href="{{ url_for("search", q=maybe) }}">{{ maybe }}</a> instead.</p>
+					<h4>Results for {{ text | e }}</h4>
+					<p>Did you mean <a href="{{ url_for("search", q=maybe) }}">{{ maybe | e }}</a>.</p>
 				</div>
 		    </div>
 			{% endif %}

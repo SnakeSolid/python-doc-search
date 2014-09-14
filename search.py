@@ -25,7 +25,8 @@ class SearchResult(flask.views.MethodView):
 		suggest = flask.session["suggest"] if "suggest" in flask.session else True
 		
 		if suggest:
-			suggest, maybe = self.indexer.suggest(query)
+			maybe = self.indexer.suggest(query)
+			suggest = maybe != query
 		else:
 			maybe = None
 		

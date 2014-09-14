@@ -32,6 +32,14 @@ class Indexer(object):
 		else:
 			self.index = whoosh.index.open_dir(index_dir, schema=self.schema)
 			
+		self.plainparser = whoosh.qparser.QueryParser("content", self.schema)
+		self.plainparser.add_plugin(whoosh.qparser.FuzzyTermPlugin())
+		self.plainparser.add_plugin(whoosh.qparser.PlusMinusPlugin())
+		
+		self.multiparser = whoosh.qparser.MultifieldParser(["title", "content", "tags"], self.schema)
+		self.multiparser.add_plugin(whoosh.qparser.FuzzyTermPlugin())
+		self.multiparser.add_plugin(whoosh.qparser.PlusMinusPlugin())
+
 		self.searcher = self.index.searcher()
 
 
@@ -83,37 +91,16 @@ class Indexer(object):
 					writer.add_document(path=path, title=title, content=content, tags=utags)
 		
 	def suggest(self, query):
-		qp = whoosh.qparser.QueryParser("content", self.schema)
-		q = qp.parse(query)
+		parsed = self.plainparser.parse(query)
 		
-		resultterms = []
-		resultsame = False
-		
-		for field, term in q.all_terms():
-			suggests = self.searcher.suggest(field, term, limit=1)
-			
-			if len(suggests) == 0:
-				resultterms.append(term)
-			else:
-				suggestion = suggests[0]
-				
-				if whoosh.lang.porter.stem(suggestion) == whoosh.lang.porter.stem(term):
-					resultterms.append(term)
-				else:
-					resultterms.append(suggestion)
-					
-					resultsame = True
-		
-		return resultsame, " ".join(resultterms)
+		return self.searcher.correct_query(parsed, query).string
 		
 	def search(self, query, page=1, pagelen=10):
 		result = []
 		
-		parser = whoosh.qparser.MultifieldParser(["title", "content", "tags"], self.schema)
-		parser.add_plugin(whoosh.qparser.FuzzyTermPlugin())
-		parser.add_plugin(whoosh.qparser.PlusMinusPlugin())
+		parsed = self.multiparser.parse(query)
 		
-		for hit in self.searcher.search_page(parser.parse(query), pagenum=page, pagelen=pagelen):
+		for hit in self.searcher.search_page(parsed, pagenum=page, pagelen=pagelen):
 			result.append({
 					"rank": hit.rank,
 					"score": hit.score,
