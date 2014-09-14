@@ -8,3 +8,17 @@ syntax: glob
 ium8
 syntax: glob
 index
+syntax: glob
+bs4
+syntax: glob
+flask
+syntax: glob
+itsdangerous
+syntax: regexp
+^jinja2$
+syntax: regexp
+^markupsafe$
+syntax: regexp
+^werkzeug$
+syntax: regexp
+^whoosh$
