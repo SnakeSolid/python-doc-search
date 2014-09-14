@@ -31,3 +31,13 @@ def str_one_of(text, default, values):
         return default
     
     return text
+
+
+def str_to_bool(text, default, true_value, false_value):
+    if text == true_value:
+        return True
+
+    if text == false_value:
+        return False
+
+    return default

@@ -20,8 +20,13 @@ class SearchResult(flask.views.MethodView):
 
 		pagesize = flask.session["pagesize"] if "pagesize" in flask.session else 10
 		page = util.str_to_int(flask.request.args.get("p"), default=1, min_value=1) 
-		suggest, maybe = self.indexer.suggest(query)
 		result = self.indexer.search(query, page, pagesize)
 		target = flask.session["target"] if "target" in flask.session else "blank"
+		suggest = flask.session["suggest"] if "suggest" in flask.session else True
+		
+		if suggest:
+			suggest, maybe = self.indexer.suggest(query)
+		else:
+			maybe = None
 		
 		return flask.render_template("search.html", text=query, suggest=suggest, maybe=maybe, result=result, page=page, target=target)

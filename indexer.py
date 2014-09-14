@@ -31,6 +31,9 @@ class Indexer(object):
 			writer.commit()
 		else:
 			self.index = whoosh.index.open_dir(index_dir, schema=self.schema)
+			
+		self.searcher = self.index.searcher()
+
 
 	def index_recursive(self, writer, regex, tags, docs_dir):
 		logging.info("recurcive processing %s (%s)" % (docs_dir, ",".join(tags)))
@@ -52,6 +55,11 @@ class Indexer(object):
 					if body == None:
 						continue
 					
+					content = re.sub(regex, " ", body.get_text().strip())
+					
+					if content == "":
+						continue
+					
 					path = unicode(filepath)
 					title = None
 					
@@ -71,9 +79,7 @@ class Indexer(object):
 					if title == None or title == "":
 						title = unicode(filename)
 
-					content = re.sub(regex, " ", body.get_text().strip())
 					utags = unicode(",".join(tags))
-					
 					writer.add_document(path=path, title=title, content=content, tags=utags)
 		
 	def suggest(self, query):
@@ -83,40 +89,38 @@ class Indexer(object):
 		resultterms = []
 		resultsame = False
 		
-		with self.index.searcher() as searcher:
-			for field, term in q.all_terms():
-				suggests = searcher.suggest(field, term, limit=1)
+		for field, term in q.all_terms():
+			suggests = self.searcher.suggest(field, term, limit=1)
+			
+			if len(suggests) == 0:
+				resultterms.append(term)
+			else:
+				suggestion = suggests[0]
 				
-				if len(suggests) == 0:
+				if whoosh.lang.porter.stem(suggestion) == whoosh.lang.porter.stem(term):
 					resultterms.append(term)
 				else:
-					suggestion = suggests[0]
+					resultterms.append(suggestion)
 					
-					if whoosh.lang.porter.stem(suggestion) == whoosh.lang.porter.stem(term):
-						resultterms.append(term)
-					else:
-						resultterms.append(suggestion)
-						
-						resultsame = True
+					resultsame = True
 		
 		return resultsame, " ".join(resultterms)
 		
 	def search(self, query, page=1, pagelen=10):
 		result = []
 		
-		with self.index.searcher() as searcher:
-			parser = whoosh.qparser.MultifieldParser(["title", "content", "tags"], self.schema)
-			parser.add_plugin(whoosh.qparser.FuzzyTermPlugin())
-			parser.add_plugin(whoosh.qparser.PlusMinusPlugin())
-			
-			for hit in searcher.search_page(parser.parse(query), pagenum=page, pagelen=pagelen):
-				result.append({
-						"rank": hit.rank,
-						"score": hit.score,
-						"path": hit["path"],
-						"title": hit["title"] if "title" in hit else "",
-						"content": hit.highlights("content"),
-						"tags": hit["tags"]
-					})
+		parser = whoosh.qparser.MultifieldParser(["title", "content", "tags"], self.schema)
+		parser.add_plugin(whoosh.qparser.FuzzyTermPlugin())
+		parser.add_plugin(whoosh.qparser.PlusMinusPlugin())
+		
+		for hit in self.searcher.search_page(parser.parse(query), pagenum=page, pagelen=pagelen):
+			result.append({
+					"rank": hit.rank,
+					"score": hit.score,
+					"path": hit["path"],
+					"title": hit["title"] if "title" in hit else "",
+					"content": hit.highlights("content"),
+					"tags": hit["tags"]
+				})
 			
 		return result

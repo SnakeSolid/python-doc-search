@@ -60,6 +60,20 @@
 							</label>
 						</div>
 						
+						<h4>Suggestion settings</h4>
+					
+						<div class="input-control checkbox">
+							<label for="suggest">
+								{% if suggest %}
+								<input type="checkbox" id="suggest" name="suggest" checked="checked" />
+								{% else %}
+								<input type="checkbox" id="suggest" name="suggest" />
+								{% endif %}
+								<span class="check"></span>
+								Show suggestions
+							</label>
+						</div>
+						
 						<div class="input-control">
 							<button type="submit" class="primary">Save settings</button>
 							<button type="reset">Reset</button>
