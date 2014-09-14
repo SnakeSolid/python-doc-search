@@ -9,11 +9,10 @@ import bs4
 import whoosh.fields
 import whoosh.index 
 import whoosh.qparser
-import whoosh.lang.porter
 
 
 class Indexer(object):
-	def __init__(self, index_dir, docs_dir):
+	def __init__(self, index_dir, docs_dirs):
 		self.schema = whoosh.fields.Schema(
 				path=whoosh.fields.ID(stored=True),
 				title=whoosh.fields.TEXT(phrase=False, stored=True),
@@ -27,7 +26,10 @@ class Indexer(object):
 			self.index = whoosh.index.create_in(index_dir, self.schema)
 			
 			writer = self.index.writer()
-			self.index_recursive(writer, re.compile("\\s+", re.MULTILINE | re.UNICODE), [], docs_dir)
+			
+			for docs_dir in docs_dirs:
+				self.index_recursive(writer, re.compile("\\s+", re.MULTILINE | re.UNICODE), [], docs_dir)
+			
 			writer.commit()
 		else:
 			self.index = whoosh.index.open_dir(index_dir, schema=self.schema)
