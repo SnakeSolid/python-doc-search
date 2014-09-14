@@ -22,7 +22,10 @@ Index contains following fields:
 * Whoosh - full text search and highlight;
 * Metro UI CSS - metro ui like css styles.
 
-All libraries included, but package manager can be used to install it.
+All libraries can be installed with package manager or downloaded from
+their official sites.
+
+Full version with libraries available [here](https://bitbucket.org/snakesolid/python-doc-search/downloads/doc-search.tgz).
 
 ### License
 
